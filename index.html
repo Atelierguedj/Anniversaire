@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🎂 Joyeux anniversaire Talia 🎂</title>
+
+<style>
+
+body{
+  margin:0;
+  background:black;
+  color:white;
+  font-family:Arial,sans-serif;
+}
+
+h1{
+  text-align:center;
+  padding:30px;
+  font-size:50px;
+}
+
+#pubGallery{
+  width:90%;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#111;
+  border-radius:25px;
+  overflow:hidden;
+}
+
+.photo{
+  width:100%;
+  display:block;
+}
+
+.cardContent{
+  padding:15px;
+}
+
+.name{
+  font-size:22px;
+  font-weight:bold;
+}
+
+.msg{
+  opacity:0.8;
+  margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🎂 Joyeux anniversaire Talia 🎂</h1>
+
+<div id="pubGallery"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCUDijnOQ7wh7kvSyuXw0iMybZDH1agRU0",
+  authDomain: "talilaniversaire.firebaseapp.com",
+  databaseURL: "https://talilaniversaire-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "talilaniversaire",
+  storageBucket: "talilaniversaire.firebasestorage.app",
+  messagingSenderId: "770459220517",
+  appId: "1:770459220517:web:f6cb6fafbecddde9771dcc"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+function renderPubPhotos(){
+
+  const gallery = document.getElementById("pubGallery");
+
+  db.ref("galerie-pub").on("value", (snapshot)=>{
+
+    gallery.innerHTML = "";
+
+    const items = Object.values(snapshot.val() || {});
+
+    items.reverse().forEach((it)=>{
+
+      let img = "";
+
+      if(it.image){
+        img = it.image;
+      }
+      else if(it.file && it.file.data){
+        img = it.file.data;
+      }
+
+      if(!img) return;
+
+      gallery.innerHTML += `
+        <div class="card">
+
+          <img src="${img}" class="photo">
+
+          <div class="cardContent">
+            <div class="name">
+              ${it.name || "Invité"}
+            </div>
+
+            <div class="msg">
+              ${it.msg || ""}
+            </div>
+          </div>
+
+        </div>
+      `;
+    });
+
+  });
+
+}
+
+renderPubPhotos();
+
+</script>
+
+</body>
+</html>
